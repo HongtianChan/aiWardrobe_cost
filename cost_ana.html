@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>AI Wardrobe Master Budget Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    <style>
+        body { background-color: #2c3e50; color: #ffffff; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 20px; }
+        .container { display: flex; flex-wrap: wrap; justify-content: space-around; gap: 20px; }
+        .chart-box { background: rgba(255, 255, 255, 0.05); border-radius: 15px; padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
+        h2 { text-align: center; color: #ecf0f1; font-weight: 300; margin-bottom: 30px; }
+    </style>
+</head>
+<body>
+    <h2>Project Resource & Financial Visualization</h2>
+    <div class="container">
+        <!-- 预算构成环形图 -->
+        <div id="budgetPie" class="chart-box" style="width: 550px; height: 450px;"></div>
+        <!-- 任务工时分布图 -->
+        <div id="effortBar" class="chart-box" style="width: 550px; height: 450px;"></div>
+    </div>
+
+    <script type="text/javascript">
+        // 预算构成数据 (Chapter 7.4)
+        var budgetChart = echarts.init(document.getElementById('budgetPie'));
+        budgetChart.setOption({
+            title: { text: 'Budget Allocation (Total: ¥273,360)', left: 'center', textStyle: { color: '#fff' } },
+            tooltip: { trigger: 'item', formatter: '{b}: ¥{c} ({d}%)' },
+            legend: { bottom: '0', textStyle: { color: '#ccc' } },
+            series: [{
+                name: 'Cost Category',
+                type: 'pie',
+                radius: ['40%', '70%'],
+                avoidLabelOverlap: false,
+                itemStyle: { borderRadius: 10, borderColor: '#2c3e50', borderWidth: 2 },
+                label: { show: true, color: '#fff', formatter: '{b}\n{d}%' },
+                data: [
+                    { value: 173360, name: 'Human Resources' },
+                    { value: 38000, name: 'Computing & Cloud' },
+                    { value: 27000, name: 'Capital Assets' },
+                    { value: 15000, name: 'Office & Utilities' },
+                    { value: 15000, name: 'Team Subsistence' },
+                    { value: 5000, name: 'Contingency Fund' }
+                ]
+            }],
+            color: ['#5470c6', '#91cc75', '#fac858', '#ee6666', '#73c0de', '#3ba272']
+        });
+
+        // PERT 工时分布数据 (Chapter 7.1)
+        var effortChart = echarts.init(document.getElementById('effortBar'));
+        effortChart.setOption({
+            title: { text: 'PERT Expected Labor Effort (Total: 2,167h)', left: 'center', textStyle: { color: '#fff' } },
+            tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' } },
+            grid: { left: '3%', right: '4%', bottom: '10%', containLabel: true },
+            xAxis: { type: 'value', axisLabel: { color: '#ccc' }, splitLine: { lineStyle: { color: '#444' } } },
+            yAxis: { 
+                type: 'category', 
+                data: ['MLOps/QA', 'Frontend', 'Backend', '2.5D Engine', 'AI Pipeline'],
+                axisLabel: { color: '#fff' }
+            },
+            series: [{
+                name: 'Expected Hours (E)',
+                type: 'bar',
+                data: [267, 375, 425, 525, 575],
+                itemStyle: {
+                    color: new echarts.graphic.LinearGradient(1, 0, 0, 0, [
+                        { offset: 0, color: '#83bff6' },
+                        { offset: 0.5, color: '#188df0' },
+                        { offset: 1, color: '#188df0' }
+                    ])
+                },
+                label: { show: true, position: 'right', color: '#fff' }
+            }]
+        });
+
+        window.onresize = function() {
+            budgetChart.resize();
+            effortChart.resize();
+        };
+    </script>
+</body>
+</html>
